@@ -577,4 +577,63 @@ namespace ORB_SLAM3_Wrapper
             return false;
         }
     }
+
+    bool ORBSLAM3Interface::trackMONOCULAR(const sensor_msgs::msg::Image::SharedPtr msgRGB, Sophus::SE3f &Tcw)
+    {
+        orbAtlas_ = mSLAM_->GetAtlas();
+        cv_bridge::CvImageConstPtr cvRGB;
+
+        cv::Mat input_image = cv_bridge::toCvCopy(msgRGB, sensor_msgs::image_encodings::BGR8)->image;
+
+        // Copy the ros rgb image message to cv::Mat.
+        // try
+        // {
+        //     cvRGB = cv_bridge::toCvShare(msgRGB);
+        // }
+        // catch (cv_bridge::Exception &e)
+        // {
+        //     std::cerr << "cv_bridge exception RGB!" << endl;
+        //     return false;
+        // }
+
+
+        // track the frame.
+        // std::cout << "TrackMonocular enter." << endl;
+        Tcw = mSLAM_->TrackMonocular(input_image, typeConversions_->stampToSec(msgRGB->header.stamp));
+        // std::cout << "TrackMonocular exit." << endl;
+        auto currentTrackingState = mSLAM_->GetTrackingState();
+        auto orbLoopClosing = mSLAM_->GetLoopClosing();
+        if (orbLoopClosing->mergeDetected())
+        {
+            // do not publish any values during map merging. This is because the reference poses change.
+            std::cout << "Waiting for merge to finish." << endl;
+            return false;
+        }
+        if (currentTrackingState == 2)
+        {
+            calculateReferencePoses();
+            correctTrackedPose(Tcw);
+            std::vector<ORB_SLAM3::MapPoint *> tempMapPoints;
+            auto tempTwc = Tcw.inverse();
+            // mapPointsVisibleFromPose(tempTwc, tempMapPoints, 1000, 5.0, 2.0);
+            hasTracked_ = true;
+            return true;
+        }
+        else
+        {
+            switch (currentTrackingState)
+            {
+            case 0:
+                std::cerr << "ORB-SLAM failed: No images yet." << endl;
+                break;
+            case 1:
+                std::cerr << "ORB-SLAM failed: Not initialized." << endl;
+                break;
+            case 3:
+                std::cerr << "ORB-SLAM failed: Tracking LOST." << endl;
+                break;
+            }
+            return false;
+        }
+    }
 }

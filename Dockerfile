@@ -21,6 +21,7 @@ RUN apt-get install -y \
     libglew-dev \
     libpython3-dev \
     libeigen3-dev \
+    mc \
     apt-transport-https \
     ca-certificates\
     software-properties-common
