@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 project(orb_slam3_ros2_wrapper)
 
 # You should set the PYTHONPATH to your own python site-packages path
-set(ENV{PYTHONPATH} "/opt/ros/humble/lib/python3.10/site-packages/")
+set(ENV{PYTHONPATH} "/opt/ros/jazzy/lib/python3.10/site-packages/")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 
