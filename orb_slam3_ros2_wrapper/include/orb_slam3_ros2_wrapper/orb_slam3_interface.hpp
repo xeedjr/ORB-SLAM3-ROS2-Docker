@@ -21,7 +21,7 @@
 #include <slam_msgs/msg/map_data.hpp>
 #include <slam_msgs/msg/map_graph.hpp>
 
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 
 
 #include "sophus/se3.hpp"
