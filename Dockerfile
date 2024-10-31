@@ -112,7 +112,7 @@ RUN cd /tmp && git clone https://github.com/stevenlovegrove/Pangolin && \
 # RUN cd /root/ &&  chmod +x * && ./vscode_install.sh && rm -rf vscode_install.sh
 
 # Build ORB-SLAM3 with its dependencies.
-RUN apt-get update && apt-get install ros-jazzy-pcl-ros tmux -y
+RUN apt-get update && apt-get install ros-jazzy-pcl-ros ros-jazzy-sophus tmux -y
 RUN apt-get install ros-jazzy-nav2-common x11-apps nano -y
 COPY ORB_SLAM3 /home/orb/ORB_SLAM3
 RUN . /opt/ros/jazzy/setup.sh && cd /home/orb/ORB_SLAM3 && mkdir -p build && ./build.sh

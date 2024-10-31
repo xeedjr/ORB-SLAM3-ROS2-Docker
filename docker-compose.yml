@@ -1,7 +1,7 @@
 version: "3"
 services:
-  orb_slam3_22_humble:
-    build: .
+  orb_slam3_24_jazzy:
+    image: orb-slam3-jazzy:24.04
     volumes:
       #full dev
       - /dev:/dev:rw
@@ -14,7 +14,6 @@ services:
       - ./container_root/:/root/
       - ./orb_slam3_ros2_wrapper/:/root/colcon_ws/src/orb_slam3_ros2_wrapper/
       - ./slam_msgs/:/root/colcon_ws/src/slam_msgs/
-      - ./camera_udp_publisher:/root/colcon_ws/src/camera_udp_publisher
       # - ./ORB_SLAM3/:/home/orb/ORB_SLAM3/
     privileged: true
     network_mode: host
