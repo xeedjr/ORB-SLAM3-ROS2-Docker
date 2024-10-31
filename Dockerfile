@@ -1,6 +1,6 @@
 # Image taken from https://github.com/turlucode/ros-docker-gui
-#FROM osrf/ros:jazzy-desktop-full-noble
-FROM ubuntu:24.04
+FROM osrf/ros:jazzy-desktop-full-noble
+# FROM ubuntu:24.04
 
 RUN apt-get update
 
@@ -31,30 +31,30 @@ RUN apt update
 
 
 #ROS2 Jazzy install 
-RUN locale  # check for UTF-8
+# RUN locale  # check for UTF-8
 
-RUN apt update &&  apt install locales -y
-RUN locale-gen en_US en_US.UTF-8
-RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-RUN export LANG=en_US.UTF-8
+# RUN apt update &&  apt install locales -y
+# RUN locale-gen en_US en_US.UTF-8
+# RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+# RUN export LANG=en_US.UTF-8
 
-RUN locale  # verify settings
+# RUN locale  # verify settings
 
-RUN apt install software-properties-common -y
-RUN add-apt-repository universe
+# RUN apt install software-properties-common -y
+# RUN add-apt-repository universe
 
-RUN apt update &&  apt install curl -y
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+# RUN apt update &&  apt install curl -y
+# RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" |  tee /etc/apt/sources.list.d/ros2.list > /dev/null
+# RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" |  tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
-RUN apt update &&  apt install ros-dev-tools -y
+# RUN apt update &&  apt install ros-dev-tools -y
 
-RUN apt update
+# RUN apt update
 
-RUN apt upgrade
+# RUN apt upgrade
 
-RUN apt install ros-jazzy-desktop -y
+# RUN apt install ros-jazzy-desktop -y
 
 
 # boost
@@ -119,4 +119,4 @@ RUN . /opt/ros/jazzy/setup.sh && cd /home/orb/ORB_SLAM3 && mkdir -p build && ./b
 COPY orb_slam3_ros2_wrapper /root/colcon_ws/src/orb_slam3_ros2_wrapper
 COPY slam_msgs /root/colcon_ws/src/slam_msgs
 RUN apt install libpcl-dev -y
-# RUN . /opt/ros/jazzy/setup.sh && cd /root/colcon_ws/ && colcon build --symlink-install
+RUN . /opt/ros/jazzy/setup.sh && cd /root/colcon_ws/ && colcon build --symlink-install
