@@ -71,14 +71,8 @@ def generate_launch_description():
             namespace=robot_namespace.perform(context),
             arguments=[vocabulary_file_path, config_file_path],
             parameters=[configured_params])
-        
-        camera_node = Node(
-            package='camera_udp_publisher',
-            executable='my_node',
-            output='screen'
-        )
 
-        return [declare_params_file_cmd, orb_slam3_node, camera_node]
+        return [declare_params_file_cmd, orb_slam3_node]
 
     opaque_function = OpaqueFunction(function=all_nodes_launch, args=[robot_namespace, robot_x, robot_y])
 #---------------------------------------------
