@@ -27,7 +27,7 @@ sudo chmod +x container_root/shell_scripts/docker_install.sh
 
 ## 3. Build the image with ORB_SLAM3
 
-1. Build the image: ```sudo docker build -t orb-slam3-Jazzy:24.04 .```
+1. Build the image: ```sudo docker build -t orb-slam3-jazzy:24.04 .```
 2. Add ```xhost +``` to your ```.bashrc``` to support correct x11-forwarding using ```echo "xhost +" >> ~/.bashrc```
 3. ```source ~/.bashrc```
 4. You can see the built images on your machine by running ```sudo docker images```.
