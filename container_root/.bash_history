@@ -498,3 +498,20 @@ ls
 tmux
 ls
 ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py 
+mc
+apt install mc
+mc
+colcon build --symlink-install
+ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py
+source install/setup.bash
+ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py
+mc
+apt install mc
+mc
+colcon build --symlink-install
+source install/setup.bash
+ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py
+mc
+colcon build --symlink-install
+source install/setup.bash
+ros2 launch orb_slam3_ros2_wrapper unirobot.launch.py

@@ -1,9 +1,9 @@
 # ORB-SLAM3 ROS2 Wrapper Docker
 
-This repository contains a dockerized comprehensive wrapper for ORB-SLAM3 on ROS 2 Humble for Ubuntu 22.04.
+This repository contains a dockerized comprehensive wrapper for ORB-SLAM3 on ROS 2 Jazzy for Ubuntu 24.04.
 
 ## Build status
-![Humble Docker Build](https://github.com/suchetanrs/ORB-SLAM3-ROS2-Docker/actions/workflows/build-humble-image.yml/badge.svg)
+![Jazzy Docker Build](https://github.com/suchetanrs/ORB-SLAM3-ROS2-Docker/actions/workflows/build-Jazzy-image.yml/badge.svg)
 
 # Demo GIF
 
@@ -27,7 +27,7 @@ sudo chmod +x container_root/shell_scripts/docker_install.sh
 
 ## 3. Build the image with ORB_SLAM3
 
-1. Build the image: ```sudo docker build -t orb-slam3-humble:22.04 .```
+1. Build the image: ```sudo docker build -t orb-slam3-Jazzy:24.04 .```
 2. Add ```xhost +``` to your ```.bashrc``` to support correct x11-forwarding using ```echo "xhost +" >> ~/.bashrc```
 3. ```source ~/.bashrc```
 4. You can see the built images on your machine by running ```sudo docker images```.
@@ -35,7 +35,7 @@ sudo chmod +x container_root/shell_scripts/docker_install.sh
 ## 4. Running the container
 
 1. ```cd ORB-SLAM3-ROS2-Docker``` (ignore if you are already in the folder)
-2. ```sudo docker compose run orb_slam3_22_humble```
+2. ```sudo docker compose run orb_slam3_22_Jazzy```
 3. This should take you inside the container. Once you are inside, run the command ```xeyes``` and a pair of eyes should pop-up. If they do, x11 forwarding has correctly been setup on your computer.
 
 ## 5. Building the ORB-SLAM3 Wrapper
@@ -67,7 +67,7 @@ The simulation and the wrapper both have their ```ROS_DOMAIN_ID``` set to 55 so 
 
 ## Important notes
 
-ORB-SLAM3 is launched from ```orb_slam3_docker_20_humble/orb_slam3_ros2_wrapper/launch/rgbd.launch.py``` which inturn is launched from ```orb_slam3_docker_20_humble/orb_slam3_ros2_wrapper/launch/unirobot.launch.py```
+ORB-SLAM3 is launched from ```orb_slam3_docker_20_Jazzy/orb_slam3_ros2_wrapper/launch/rgbd.launch.py``` which inturn is launched from ```orb_slam3_docker_20_Jazzy/orb_slam3_ros2_wrapper/launch/unirobot.launch.py```
 
 Currently the ```rgbd.launch.py``` launch file defaults to ```orb_slam3_ros2_wrapper/params/gazebo_rgbd.yaml```. You can modify this with your own parameter file in case you wish to use your own camera.
 

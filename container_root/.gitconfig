@@ -1,2 +1,7 @@
 [safe]
 	directory = /home/orb/ORB_SLAM3
+[user]
+	email = xeedjr@gmail.com
+	name = Bogdan Yarushevskyi
+[credential]
+	helper = "!f() { /root/.vscode-server/bin/384ff7382de624fb94dbaf6da11977bba1ecd427/node /tmp/vscode-remote-containers-1bff5349-df44-42d9-b0a3-93ced4f793d0.js git-credential-helper $*; }; f"

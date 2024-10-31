@@ -54,6 +54,7 @@ namespace ORB_SLAM3_Wrapper
         void OdomCallback(const nav_msgs::msg::Odometry::SharedPtr msgOdom);
         void RGBDCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB,
                           const sensor_msgs::msg::Image::SharedPtr msgD);
+        void MONOCULARCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB);
 
         /**
          * @brief Publishes map data. (Keyframes and all poses in the current active map.)
@@ -81,7 +82,7 @@ namespace ORB_SLAM3_Wrapper
          * Member variables
          */
         // RGBD Sensor specifics
-        std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> rgbSub_;
+        rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr rgbSub_;
         std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> depthSub_;
         std::shared_ptr<message_filters::Synchronizer<approximate_sync_policy>> syncApproximate_;
         rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imuSub_;

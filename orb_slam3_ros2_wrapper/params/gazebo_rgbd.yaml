@@ -3,34 +3,38 @@
 #--------------------------------------------------------------------------------------------
 # Camera Parameters. Adjust them!
 #--------------------------------------------------------------------------------------------
-Camera.type: "PinHole"
+Camera.type: "KannalaBrandt8"
 
 # Camera calibration and distortion parameters (OpenCV) 
 # Right Camera calibration and distortion parameters (OpenCV)
-Camera.fx: 528.433756558705
-Camera.fy: 528.433756558705
-Camera.cx: 320.5
-Camera.cy: 240.5
+Camera.fx: 1067.0
+Camera.fy: 1067.0
+Camera.cx: 623.4910502218435
+Camera.cy: 359.0938101545958
 
 
 # distortion parameters
-Camera.k1: 0.0
-Camera.k2: 0.0
-Camera.p1: 0.0
-Camera.p2: 0.0
-Camera.k3: 0.0
+Camera.k1: -0.4172476531677065
+Camera.k2: 0.2436496568936292
+Camera.p1: -0.002665843262345778
+Camera.p2: -0.002562133116923645
+Camera.k3: -0.09418969502993373
+Camera.k4: 0.0
 
-Camera.width: 640
-Camera.height: 480
+Camera.width: 1280
+Camera.height: 720
 
 # Camera frames per second 
-Camera.fps: 30.0
+Camera.fps: 10.0
 
 # IR projector baseline times fx (aprox.)
 Camera.bf: 37.0
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 0
+
+
+
 
 # Close/Far threshold. Baseline times.
 ThDepth: 40.0
@@ -91,5 +95,4 @@ Viewer.ViewpointX: 0
 Viewer.ViewpointY: -0.7
 Viewer.ViewpointZ: -1.8
 Viewer.ViewpointF: 500
-System.SaveAtlasToFile: ./atlas
 

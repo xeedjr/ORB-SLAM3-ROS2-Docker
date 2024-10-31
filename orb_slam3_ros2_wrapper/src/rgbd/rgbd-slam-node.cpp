@@ -15,17 +15,20 @@ namespace ORB_SLAM3_Wrapper
         : Node("ORB_SLAM3_RGBD_ROS2")
     {
         // Declare parameters (topic names)
-        this->declare_parameter("rgb_image_topic_name", rclcpp::ParameterValue("camera/image_raw"));
+        this->declare_parameter("rgb_image_topic_name", rclcpp::ParameterValue("image_raw"));
         this->declare_parameter("depth_image_topic_name", rclcpp::ParameterValue("depth/image_raw"));
         this->declare_parameter("imu_topic_name", rclcpp::ParameterValue("imu"));
         this->declare_parameter("odom_topic_name", rclcpp::ParameterValue("odom"));
 
         // ROS Subscribers
-        rgbSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("rgb_image_topic_name").as_string());
-        depthSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("depth_image_topic_name").as_string());
-        syncApproximate_ = std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(approximate_sync_policy(10), *rgbSub_, *depthSub_);
-        syncApproximate_->registerCallback(&RgbdSlamNode::RGBDCallback, this);
+        //rgbSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("rgb_image_topic_name").as_string());
+ 
+        rgbSub_ = this->create_subscription<sensor_msgs::msg::Image>(this->get_parameter("rgb_image_topic_name").as_string(), rclcpp::QoS(1000).best_effort(), std::bind(&RgbdSlamNode::MONOCULARCallback, this, std::placeholders::_1));
 
+        //depthSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("depth_image_topic_name").as_string());
+        //syncApproximate_ = std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(approximate_sync_policy(10), *rgbSub_, *depthSub_);
+        
+        
         imuSub_ = this->create_subscription<sensor_msgs::msg::Imu>(this->get_parameter("imu_topic_name").as_string(), 1000, std::bind(&RgbdSlamNode::ImuCallback, this, std::placeholders::_1));
         odomSub_ = this->create_subscription<nav_msgs::msg::Odometry>(this->get_parameter("odom_topic_name").as_string(), 1000, std::bind(&RgbdSlamNode::OdomCallback, this, std::placeholders::_1));
         // ROS Publishers
@@ -128,6 +131,27 @@ namespace ORB_SLAM3_Wrapper
     {
         Sophus::SE3f Tcw;
         if (interface_->trackRGBD(msgRGB, msgD, Tcw))
+        {
+            isTracked_ = true;
+            if (publish_tf_)
+            {
+                if (no_odometry_mode_)
+                    interface_->getDirectMapToRobotTF(msgRGB->header, tfMapOdom_);
+                tfBroadcaster_->sendTransform(tfMapOdom_);
+            }
+            ++frequency_tracker_count_;
+            // publishMapPointCloud();
+            // std::thread(&RgbdSlamNode::publishMapPointCloud, this).detach();
+        }
+    }
+
+    void RgbdSlamNode::MONOCULARCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB)
+    {
+        Sophus::SE3f Tcw;
+        //RCLCPP_INFO(this->get_logger(), "DESTRUCTOR!");
+        //std::cout << "++++++++++++++++++++============================ " << std::endl;
+
+        if (interface_->trackMONOCULAR(msgRGB, Tcw))
         {
             isTracked_ = true;
             if (publish_tf_)

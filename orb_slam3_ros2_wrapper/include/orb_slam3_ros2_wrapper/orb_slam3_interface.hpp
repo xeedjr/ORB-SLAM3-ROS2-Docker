@@ -21,7 +21,7 @@
 #include <slam_msgs/msg/map_data.hpp>
 #include <slam_msgs/msg/map_graph.hpp>
 
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 
 
 #include "sophus/se3.hpp"
@@ -87,6 +87,8 @@ namespace ORB_SLAM3_Wrapper
         bool trackRGBDi(const sensor_msgs::msg::Image::SharedPtr msgRGB, const sensor_msgs::msg::Image::SharedPtr msgD, Sophus::SE3f &Tcw);
 
         bool trackRGBD(const sensor_msgs::msg::Image::SharedPtr msgRGB, const sensor_msgs::msg::Image::SharedPtr msgD, Sophus::SE3f &Tcw);
+
+        bool trackMONOCULAR(const sensor_msgs::msg::Image::SharedPtr msgRGB, Sophus::SE3f &Tcw);
 
         std::shared_ptr<WrapperTypeConversions> getTypeConversionPtr()
         {
