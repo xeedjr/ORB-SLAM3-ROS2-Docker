@@ -1,7 +1,7 @@
 version: "3"
 services:
-  orb_slam3_22_humble:
-    build: .
+  orb_slam3_24_jazzy:
+    image: orb-slam3-jazzy:24.04
     volumes:
       #full dev
       - /dev:/dev:rw
