@@ -44,7 +44,7 @@ def generate_launch_description():
     def all_nodes_launch(context, robot_namespace, robot_x, robot_y):
         params_file = LaunchConfiguration('params_file')
         vocabulary_file_path = "/home/orb/ORB_SLAM3/Vocabulary/ORBvoc.txt"
-        config_file_path = "/root/colcon_ws/src/orb_slam3_ros2_wrapper/params/gazebo_rgbd.yaml"
+        config_file_path = "/root/colcon_ws/src/orb_slam3_ros2_wrapper/params/gazebo_rgbd-sim.yaml"
         declare_params_file_cmd = DeclareLaunchArgument(
             'params_file',
             default_value=os.path.join(orb_wrapper_pkg, 'params', 'rgbd-ros-params.yaml'),
@@ -54,7 +54,8 @@ def generate_launch_description():
             'robot_base_frame': robot_namespace.perform(context) + '/base_footprint',
             'odom_frame': robot_namespace.perform(context) + '/odom',
             'robot_x': robot_x.perform(context),
-            'robot_y': robot_y.perform(context)
+            'robot_y': robot_y.perform(context),
+            'use_sim_time':'True'
             }
 
 

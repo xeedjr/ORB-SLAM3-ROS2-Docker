@@ -583,23 +583,24 @@ namespace ORB_SLAM3_Wrapper
         orbAtlas_ = mSLAM_->GetAtlas();
         cv_bridge::CvImageConstPtr cvRGB;
 
-        cv::Mat input_image = cv_bridge::toCvCopy(msgRGB, sensor_msgs::image_encodings::BGR8)->image;
+        //cv::Mat input_image = cv_bridge::toCvCopy(msgRGB, sensor_msgs::image_encodings::BGR8)->image;
 
-        // Copy the ros rgb image message to cv::Mat.
-        // try
-        // {
-        //     cvRGB = cv_bridge::toCvShare(msgRGB);
-        // }
-        // catch (cv_bridge::Exception &e)
-        // {
-        //     std::cerr << "cv_bridge exception RGB!" << endl;
-        //     return false;
-        // }
+        //Copy the ros rgb image message to cv::Mat.
+        try
+        {
+            cvRGB = cv_bridge::toCvShare(msgRGB);
+        }
+        catch (cv_bridge::Exception &e)
+        {
+            std::cerr << "cv_bridge exception RGB!" << endl;
+            return false;
+        }
 
 
         // track the frame.
         // std::cout << "TrackMonocular enter." << endl;
-        Tcw = mSLAM_->TrackMonocular(input_image, typeConversions_->stampToSec(msgRGB->header.stamp));
+        //Tcw = mSLAM_->TrackMonocular(input_image, typeConversions_->stampToSec(msgRGB->header.stamp));
+        Tcw = mSLAM_->TrackMonocular(cvRGB->image, typeConversions_->stampToSec(cvRGB->header.stamp));
         // std::cout << "TrackMonocular exit." << endl;
         auto currentTrackingState = mSLAM_->GetTrackingState();
         auto orbLoopClosing = mSLAM_->GetLoopClosing();

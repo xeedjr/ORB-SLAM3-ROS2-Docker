@@ -116,7 +116,7 @@ namespace ORB_SLAM3_Wrapper
         double frequency_tracker_count_ = 0;
         int map_data_publish_frequency_;
         int landmark_publish_frequency_;
-        std::chrono::_V2::system_clock::time_point frequency_tracker_clock_;
+        rclcpp::Time frequency_tracker_clock_;
 
         ORB_SLAM3_Wrapper::WrapperTypeConversions typeConversion_;
         std::shared_ptr<ORB_SLAM3_Wrapper::ORBSLAM3Interface> interface_;

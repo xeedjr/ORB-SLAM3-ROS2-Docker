@@ -19,6 +19,7 @@ services:
     network_mode: host
     ipc: "host"
     pid: "host"
+    #cpuset: "6-8"
     stdin_open: true
     tty: true
     environment:
