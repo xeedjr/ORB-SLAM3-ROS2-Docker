@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
     rclcpp::init(argc, argv);
 
-    auto node = std::make_shared<ORB_SLAM3_Wrapper::RgbdSlamNode>(argv[1], argv[2], ORB_SLAM3::System::MONOCULAR);
+    auto node = std::make_shared<ORB_SLAM3_Wrapper::RgbdSlamNode>(argv[1], argv[2], ORB_SLAM3::System::STEREO);
     std::cout << "============================ " << std::endl;
 
     auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();

@@ -23,11 +23,12 @@ namespace ORB_SLAM3_Wrapper
         // ROS Subscribers
         //rgbSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("rgb_image_topic_name").as_string());
  
-        rgbSub_ = this->create_subscription<sensor_msgs::msg::Image>(this->get_parameter("rgb_image_topic_name").as_string(), rclcpp::QoS(1000).best_effort(), std::bind(&RgbdSlamNode::MONOCULARCallback, this, std::placeholders::_1));
+        rgbLSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/diff_drive/camera_left");
+        rgbRSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/diff_drive/camera_right");
 
         //depthSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("depth_image_topic_name").as_string());
-        //syncApproximate_ = std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(approximate_sync_policy(10), *rgbSub_, *depthSub_);
-        
+        syncApproximate_ = std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(approximate_sync_policy(10), *rgbLSub_, *rgbRSub_);
+        syncApproximate_->registerCallback(&RgbdSlamNode::RGBStereoCallback, this);        
         
         imuSub_ = this->create_subscription<sensor_msgs::msg::Imu>(this->get_parameter("imu_topic_name").as_string(), 1000, std::bind(&RgbdSlamNode::ImuCallback, this, std::placeholders::_1));
         odomSub_ = this->create_subscription<nav_msgs::msg::Odometry>(this->get_parameter("odom_topic_name").as_string(), 1000, std::bind(&RgbdSlamNode::OdomCallback, this, std::placeholders::_1));
@@ -101,7 +102,8 @@ namespace ORB_SLAM3_Wrapper
 
     RgbdSlamNode::~RgbdSlamNode()
     {
-        rgbSub_.reset();
+        rgbLSub_.reset();
+        rgbRSub_.reset();
         depthSub_.reset();
         imuSub_.reset();
         odomSub_.reset();
@@ -139,6 +141,26 @@ namespace ORB_SLAM3_Wrapper
                     interface_->getDirectMapToRobotTF(msgRGB->header, tfMapOdom_);
                 tfBroadcaster_->sendTransform(tfMapOdom_);
             }
+            ++frequency_tracker_count_;
+            // publishMapPointCloud();
+            // std::thread(&RgbdSlamNode::publishMapPointCloud, this).detach();
+        }
+    }
+
+    void RgbdSlamNode::RGBStereoCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB_L,
+                                        const sensor_msgs::msg::Image::SharedPtr msgRGB_R)
+    {
+        // RCLCPP_INFO_STREAM(this->get_logger(), "RGBStereoCallback");
+        Sophus::SE3f Tcw;
+        if (interface_->trackStereo(msgRGB_L, msgRGB_R, Tcw))
+        {
+            isTracked_ = true;
+            // if (publish_tf_)
+            // {
+            //     if (no_odometry_mode_)
+            //         interface_->getDirectMapToRobotTF(msgRGB->header, tfMapOdom_);
+            //     tfBroadcaster_->sendTransform(tfMapOdom_);
+            // }
             ++frequency_tracker_count_;
             // publishMapPointCloud();
             // std::thread(&RgbdSlamNode::publishMapPointCloud, this).detach();

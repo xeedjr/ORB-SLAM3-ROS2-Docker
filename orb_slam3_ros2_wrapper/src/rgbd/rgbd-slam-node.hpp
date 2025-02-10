@@ -54,6 +54,8 @@ namespace ORB_SLAM3_Wrapper
         void OdomCallback(const nav_msgs::msg::Odometry::SharedPtr msgOdom);
         void RGBDCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB,
                           const sensor_msgs::msg::Image::SharedPtr msgD);
+        void RGBStereoCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB_L,
+                const sensor_msgs::msg::Image::SharedPtr msgRGB_R);
         void MONOCULARCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB);
 
         /**
@@ -82,7 +84,9 @@ namespace ORB_SLAM3_Wrapper
          * Member variables
          */
         // RGBD Sensor specifics
-        rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr rgbSub_;
+        std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> rgbLSub_;
+        std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> rgbRSub_;
+
         std::shared_ptr<message_filters::Subscriber<sensor_msgs::msg::Image>> depthSub_;
         std::shared_ptr<message_filters::Synchronizer<approximate_sync_policy>> syncApproximate_;
         rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imuSub_;

@@ -578,6 +578,69 @@ namespace ORB_SLAM3_Wrapper
         }
     }
 
+bool ORBSLAM3Interface::trackStereo(const sensor_msgs::msg::Image::SharedPtr msgRGB_L, const sensor_msgs::msg::Image::SharedPtr msgRGB_R, Sophus::SE3f &Tcw)
+    {
+        orbAtlas_ = mSLAM_->GetAtlas();
+        cv_bridge::CvImageConstPtr cvRGB_L;
+        cv_bridge::CvImageConstPtr cvRGB_R;
+
+        // Copy the ros rgb image message to cv::Mat.
+        try
+        {
+            cvRGB_L = cv_bridge::toCvShare(msgRGB_L);
+            cvRGB_R = cv_bridge::toCvShare(msgRGB_R);
+        }
+        catch (cv_bridge::Exception &e)
+        {
+            std::cerr << "cv_bridge exception RGB!" << endl;
+            return false;
+        }
+
+        // Convert the images to grayscale
+        cv::Mat gray_L, gray_R;
+        cv::cvtColor(cvRGB_L->image, gray_L, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(cvRGB_R->image, gray_R, cv::COLOR_BGR2GRAY);
+
+
+        // track the frame.
+        Tcw = mSLAM_->TrackStereo(gray_L, gray_R, typeConversions_->stampToSec(cvRGB_L->header.stamp));
+
+        auto currentTrackingState = mSLAM_->GetTrackingState();
+        auto orbLoopClosing = mSLAM_->GetLoopClosing();
+        if (orbLoopClosing->mergeDetected())
+        {
+            // do not publish any values during map merging. This is because the reference poses change.
+            std::cout << "Waiting for merge to finish." << endl;
+            return false;
+        }
+        if (currentTrackingState == 2)
+        {
+            calculateReferencePoses();
+            correctTrackedPose(Tcw);
+            std::vector<ORB_SLAM3::MapPoint *> tempMapPoints;
+            auto tempTwc = Tcw.inverse();
+            // mapPointsVisibleFromPose(tempTwc, tempMapPoints, 1000, 5.0, 2.0);
+            hasTracked_ = true;
+            return true;
+        }
+        else
+        {
+            switch (currentTrackingState)
+            {
+            case 0:
+                std::cerr << "ORB-SLAM failed: No images yet." << endl;
+                break;
+            case 1:
+                std::cerr << "ORB-SLAM failed: Not initialized." << endl;
+                break;
+            case 3:
+                std::cerr << "ORB-SLAM failed: Tracking LOST." << endl;
+                break;
+            }
+            return false;
+        }
+    }
+
     bool ORBSLAM3Interface::trackMONOCULAR(const sensor_msgs::msg::Image::SharedPtr msgRGB, Sophus::SE3f &Tcw)
     {
         orbAtlas_ = mSLAM_->GetAtlas();
