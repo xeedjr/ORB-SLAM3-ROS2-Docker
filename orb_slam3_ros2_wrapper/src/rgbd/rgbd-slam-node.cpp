@@ -4,6 +4,7 @@
  * @author Suchetan R S (rssuchetan@gmail.com)
  */
 #include "rgbd-slam-node.hpp"
+#include <chrono>
 
 #include <opencv2/core/core.hpp>
 
@@ -23,8 +24,8 @@ namespace ORB_SLAM3_Wrapper
         // ROS Subscribers
         //rgbSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("rgb_image_topic_name").as_string());
  
-        rgbLSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/diff_drive/camera_left");
-        rgbRSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/diff_drive/camera_right");
+        rgbLSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/camera_left");
+        rgbRSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, "/camera_right");
 
         //depthSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("depth_image_topic_name").as_string());
         syncApproximate_ = std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(approximate_sync_policy(10), *rgbLSub_, *rgbRSub_);
@@ -150,8 +151,11 @@ namespace ORB_SLAM3_Wrapper
     void RgbdSlamNode::RGBStereoCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB_L,
                                         const sensor_msgs::msg::Image::SharedPtr msgRGB_R)
     {
+        auto start = std::chrono::high_resolution_clock::now();
+
         // RCLCPP_INFO_STREAM(this->get_logger(), "RGBStereoCallback");
         Sophus::SE3f Tcw;
+
         if (interface_->trackStereo(msgRGB_L, msgRGB_R, Tcw))
         {
             isTracked_ = true;
@@ -165,6 +169,11 @@ namespace ORB_SLAM3_Wrapper
             // publishMapPointCloud();
             // std::thread(&RgbdSlamNode::publishMapPointCloud, this).detach();
         }
+        
+
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        RCLCPP_INFO_STREAM(this->get_logger(), "RGBStereoCallback duration: " << duration << " ms");
     }
 
     void RgbdSlamNode::MONOCULARCallback(const sensor_msgs::msg::Image::SharedPtr msgRGB)
